@@ -37,7 +37,7 @@ const Incomes: FC = () => {
   ];
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       {location.pathname === '/catalog' ? (
         <Button icon={<PlusOutlined />} onClick={(e) => navigation('/incomes')}>
           Add New Part
