@@ -1,16 +1,14 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Button, Typography } from 'antd';
-import { ExportOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import { ExportOutlined, SettingOutlined } from '@ant-design/icons';
 import SearchComponent from '@app/components/bazon/catalog-components/SearchComponent';
 import FixedTable from '@app/components/tables/fixedTable/FixedTable';
 import { Autopart } from '@app/components/types/catalog/catalogTypes';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
-import { useNavigate } from 'react-router-dom';
 import Incomes from '../incomes/Incomes';
 
 const Catalog: FC = () => {
-  const navigation = useNavigate();
   const [data, setData] = useState<Autopart[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const tableRef = useRef(null);
@@ -63,7 +61,7 @@ const Catalog: FC = () => {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 50 }}>
         <SearchComponent onSearchSelect={handleSearchSelect} setFilteredData={setFilteredData} data={data} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 20 }}>
-          <DownloadTableExcel currentTableRef={tableRef} filename="autoparts-table" sheet="autoparts">
+          <DownloadTableExcel currentTableRef={tableRef.current} filename="autoparts-table" sheet="autoparts">
             <Button icon={<ExportOutlined />}>Export Table Data</Button>
           </DownloadTableExcel>
           <Button loading={loading} icon={<SettingOutlined />}>

@@ -1,7 +1,12 @@
+import { BasicTable } from '@app/components/tables/BasicTable/BasicTable';
 import { FC } from 'react';
 
 const Canceled: FC = () => {
-  return <div>Canceled</div>;
+  return (
+    <div>
+      <BasicTable />
+    </div>
+  );
 };
 
 export default Canceled;
