@@ -189,3 +189,8 @@ export const mapBadgeStatus = (status: BaseBadgeProps['status']): Severity => {
 
   return status;
 };
+
+export function convertToDate(value: string): string {
+  const val = new Date(value);
+  return `${val.getDate()}-${val.getMonth()}-${val.getFullYear()}`;
+}

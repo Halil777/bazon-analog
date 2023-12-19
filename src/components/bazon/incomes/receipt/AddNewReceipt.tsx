@@ -1,9 +1,9 @@
 import { ArrowLeftOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons';
-import { Loading } from '@app/components/common/Loading/Loading';
+import { AxiosInstance } from '@app/api/axios/AxiosInstance';
+import { CarModel, GetBrands } from '@app/components/types/catalog/catalogTypes';
 import { Box, Grid, Stack, Tooltip } from '@mui/material';
-import { Button, Input, Radio, Typography } from 'antd';
-import axios from 'axios';
-import { FC, useState } from 'react';
+import { Button, Input, Radio, Select, Typography } from 'antd';
+import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const AddNewReceipt: FC = () => {
@@ -34,6 +34,41 @@ const AddNewReceipt: FC = () => {
   const [autopartId, setAutopartId] = useState<number | null>(null);
   const [createdAt, setCreatedAt] = useState<string>('');
   const [updatedAt, setUpdatedAt] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [brandData, setBrandData] = useState<GetBrands[]>([]);
+  const [modelData, setModelData] = useState<CarModel[]>([]);
+
+  const getBrands = async () => {
+    try {
+      setLoading(true);
+      const response = await AxiosInstance.get<GetBrands[]>('/options/brands');
+      setBrandData(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching brands:', error); // Improved error logging
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getModels = async () => {
+    try {
+      setLoading(true);
+      const response = await AxiosInstance.get<CarModel[]>('/options/models');
+      setModelData(response.data);
+      // console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching models:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // fetchData();
+    getBrands();
+    getModels();
+  }, []);
 
   // const handleButtonClick = () => {
   //   if (!loading) {
@@ -73,8 +108,7 @@ const AddNewReceipt: FC = () => {
       // ... (other autopart details)
     };
 
-    axios
-      .post('http://95.85.121.153:3030/autoparts', autopartData)
+    AxiosInstance.post('autoparts', autopartData)
       .then((response) => {
         if (!response.data.error) {
           alert('Successfully added new autopart!');
@@ -137,47 +171,92 @@ const AddNewReceipt: FC = () => {
           </Stack>
           <Grid container spacing={3}>
             <Grid item lg={3} md={3} sm={6} xs={12}>
-              <Input placeholder="Number manufacturer" />
+              <Select
+                style={{ width: '100%', textTransform: 'capitalize', color: '#fff' }}
+                showSearch
+                placeholder="номер производителя"
+                optionFilterProp="children"
+                filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                }
+                options={brandData.map((brand) => ({
+                  value: brand.id,
+                  label: brand.name,
+                  number_of_part: brand.number_of_part,
+                }))}
+              />
             </Grid>
             <Grid item lg={3} md={3} sm={6} xs={12}>
-              <Input placeholder="Manufacturer" />
+              <Select
+                style={{ width: '100%', textTransform: 'capitalize', color: '#fff' }}
+                showSearch
+                placeholder="производитель"
+                optionFilterProp="children"
+                filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                }
+                options={modelData.map((model) => ({
+                  value: model.id,
+                  label: model.name,
+                  brandId: model.brand_id,
+                }))}
+              />
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
-              <Input placeholder="Cross Number" />
+              <Input
+                placeholder="Cross Number"
+                value={crossNumber !== null ? crossNumber.toString() : ''}
+                onChange={(e) => setCrossNumber(Number(e.target.value))}
+              />
             </Grid>
           </Grid>
           <Typography style={{ marginTop: 30, fontSize: 18 }}>Description of the new spare part</Typography>
           <Box sx={{ background: 'gray', width: '100%', height: 2 }} mt={1} />
           <Stack direction="row" spacing={3} mt={3} alignItems="center">
-            <Radio.Group>
-              <Radio.Button style={{ width: 100 }}>Front</Radio.Button>
-              <Radio.Button style={{ width: 100 }}>Back</Radio.Button>
+            <Radio.Group value={frontBack} onChange={(e) => setFrontBack(e.target.value)}>
+              <Radio.Button value="Front" style={{ width: 100 }}>
+                Front
+              </Radio.Button>
+              <Radio.Button value="Back" style={{ width: 100 }}>
+                Back
+              </Radio.Button>
             </Radio.Group>
-            <Radio.Group>
-              <Radio.Button style={{ width: 100 }}>Left</Radio.Button>
-              <Radio.Button style={{ width: 100 }}>Right</Radio.Button>
+
+            <Radio.Group value={leftRight} onChange={(e) => setLeftRight(e.target.value)}>
+              <Radio.Button style={{ width: 100 }} value="Left">
+                Left
+              </Radio.Button>
+              <Radio.Button style={{ width: 100 }} value="Right">
+                Right
+              </Radio.Button>
             </Radio.Group>
             {/* Place for upload image button */}
           </Stack>
           <Grid container spacing={3} mt={4}>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Spare Part" />
+              <Input
+                placeholder="Spare Part"
+                value={numberOfPart !== null ? numberOfPart.toString() : ''}
+                onChange={(e) => setNumberOfPart(Number(e.target.value))}
+              />
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Markirowka" />
+              <Input
+                placeholder="Model"
+                value={modelId !== null ? modelId.toString() : ''}
+                onChange={(e) => setModelId(Number(e.target.value))}
+              />
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Color" />
+              <Input placeholder="Color" value={color} onChange={(e) => setColor(e.target.value)} />
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Comment for All" />
-            </Grid>
-            {/* Need to add comment input for users and for yourself */}
-            <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Brand" />
+              <Input placeholder="Comment for All" value={comment} onChange={(e) => setComment(e.target.value)} />
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Model" />
+              <Input placeholder="Note" value={note} onChange={(e) => setNote(e.target.value)} />
             </Grid>
           </Grid>
           <Stack direction="row" justifyContent="flex-end" mt={4}>

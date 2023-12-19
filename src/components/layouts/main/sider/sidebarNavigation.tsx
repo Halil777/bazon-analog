@@ -6,6 +6,8 @@ import {
   HomeOutlined,
   LayoutOutlined,
   LineChartOutlined,
+  MoneyCollectOutlined,
+  PlusCircleOutlined,
   TableOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -44,8 +46,23 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     title: 'Incomes',
     key: 'incomes',
     url: '/incomes',
-    icon: <DashboardOutlined />,
+    icon: <PlusCircleOutlined />,
   },
+
+  {
+    title: 'Users',
+    key: 'users',
+    url: '/users',
+    icon: <UserOutlined />,
+  },
+
+  {
+    title: 'Sales',
+    key: 'sales',
+    url: '/sales',
+    icon: <MoneyCollectOutlined />,
+  },
+
   // {
   //   title: 'common.apps',
   //   key: 'apps',

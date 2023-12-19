@@ -19,6 +19,8 @@ import MedicalDashboardPage from '@app/pages/DashboardPages/MedicalDashboardPage
 
 const CatalogPage = React.lazy(() => import('@app/pages/bazon-pages/catalog/Catalog'));
 const IncomesPage = React.lazy(() => import('@app/pages/bazon-pages/incomes/Incomes'));
+const UsersPage = React.lazy(() => import('@app/pages/bazon-pages/users/Users'));
+const SalesPage = React.lazy(() => import('@app/pages/bazon-pages/sales/Sales'));
 const AddNewReceiptPage = React.lazy(() => import('@app/pages/bazon-pages/incomes/Incomes'));
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
@@ -47,6 +49,10 @@ const AdvancedForm = withLoading(AdvancedFormsPage);
 const DataTables = withLoading(DataTablesPage);
 const Catalog = withLoading(CatalogPage);
 const Incomes = withLoading(IncomesPage);
+const Users = withLoading(UsersPage);
+const Sales = withLoading(SalesPage);
+
+//
 const AddNewReceipt = withLoading(AddNewReceiptPage);
 const Charts = withLoading(ChartsPage);
 
@@ -83,6 +89,8 @@ export const AppRouter: React.FC = () => {
           <Route path={MEDICAL_DASHBOARD_PATH} element={<MedicalDashboard />} />
           <Route path="catalog" element={<Catalog />} />
           <Route path="incomes" element={<Incomes />} />
+          <Route path="users" element={<Users />} />
+          <Route path="sales" element={<Sales />} />
           <Route path="add-new-receipt" element={<AddNewReceipt />} />
           <Route path="apps">
             <Route path="feed" element={<NewsFeed />} />

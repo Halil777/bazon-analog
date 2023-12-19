@@ -1,3 +1,4 @@
+import { convertToDate } from '@app/utils/utils';
 import type { ColumnsType } from 'antd/es/table';
 
 export interface Autopart {
@@ -37,6 +38,20 @@ export interface Autopart {
     name: string;
     model_id: number;
   };
+}
+
+export interface GetBrands {
+  id: number;
+  name: string;
+  value: string;
+  label: string;
+  number_of_part: number;
+}
+
+export interface CarModel {
+  id: number;
+  name: string;
+  brand_id: number;
 }
 
 export const columns: ColumnsType<Autopart> = [
@@ -159,12 +174,14 @@ export const columns: ColumnsType<Autopart> = [
     dataIndex: 'created_at',
     key: 'created_at',
     width: 150,
+    render: (text: string) => convertToDate(text),
   },
   {
     title: 'Updated At',
     dataIndex: 'updated_at',
     key: 'updated_at',
     width: 150,
+    render: (text: string) => convertToDate(text),
   },
   {
     title: 'Model ID',
