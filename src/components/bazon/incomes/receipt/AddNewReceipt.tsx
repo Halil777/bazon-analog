@@ -1,8 +1,8 @@
 import { ArrowLeftOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import { AxiosInstance } from '@app/api/axios/AxiosInstance';
 import { CarModel, GetBrands } from '@app/components/types/catalog/catalogTypes';
-import { Box, Grid, Stack, Tooltip } from '@mui/material';
-import { Button, Input, Radio, Select, Typography } from 'antd';
+import { Box, Checkbox, Grid, Stack, Tooltip } from '@mui/material';
+import { Alert, Button, Input, Radio, Select, Typography } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -16,12 +16,12 @@ const AddNewReceipt: FC = () => {
   const [frontBack, setFrontBack] = useState<string>('');
   const [leftRight, setLeftRight] = useState<string>('');
   const [numberOfPart, setNumberOfPart] = useState<number | null>(null);
-  const [year, setYear] = useState<string>('');
+  const [year, setYear] = useState<number | null>(null);
   const [color, setColor] = useState<string>('');
   const [comment, setComment] = useState<string>('');
   const [crossNumber, setCrossNumber] = useState<number | null>(null);
   const [note, setNote] = useState<string>('');
-  const [marking, setMarking] = useState<string>('');
+  const [marking, setMarking] = useState<number | null>(null);
   const [isArchive, setIsArchive] = useState<boolean>(false);
   const [notForExport, setNotForExport] = useState<boolean>(false);
   const [siteLink, setSiteLink] = useState<string>('');
@@ -37,6 +37,10 @@ const AddNewReceipt: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [brandData, setBrandData] = useState<GetBrands[]>([]);
   const [modelData, setModelData] = useState<CarModel[]>([]);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [priceId, setPriceId] = useState<number | null>(null);
+  const [manufacturedNo, setManufacteredNo] = useState<string>('');
+  const [categoryId, setCategoryId] = useState<number | null>(null);
 
   const getBrands = async () => {
     try {
@@ -105,15 +109,16 @@ const AddNewReceipt: FC = () => {
       autopart_id: autopartId,
       created_at: createdAt,
       updated_at: updatedAt,
-      // ... (other autopart details)
+      price_id: priceId,
+      manufactured_no: manufacturedNo,
+      category_id: categoryId,
     };
 
-    AxiosInstance.post('autoparts', autopartData)
+    AxiosInstance.post('/autoparts/', autopartData)
       .then((response) => {
         if (!response.data.error) {
           alert('Successfully added new autopart!');
           clearInput();
-          // ... (other actions after successful addition)
         } else {
           //   showError('Something went wrong!');
           alert('');
@@ -133,12 +138,12 @@ const AddNewReceipt: FC = () => {
     setFrontBack('');
     setLeftRight('');
     setNumberOfPart(null);
-    setYear('');
+    setYear(null);
     setColor('');
     setComment('');
     setCrossNumber(null);
     setNote('');
-    setMarking('');
+    setMarking(null);
     setIsArchive(false);
     setNotForExport(false);
     setSiteLink('');
@@ -151,11 +156,40 @@ const AddNewReceipt: FC = () => {
     setAutopartId(null);
     setCreatedAt('');
     setUpdatedAt('');
-    // ... (clear other state variables)
+    setShowSuccessAlert(true);
+    setPriceId(null);
+    setManufacteredNo('');
+    setCategoryId(null);
   };
+
+  const handleAlertClose = () => {
+    setTimeout(() => {
+      setShowSuccessAlert(false);
+    }, 3000);
+  };
+
+  const handleCheckboxChange = (event: any, setterFunction: any) => {
+    setterFunction(event.target.checked);
+  };
+
+  useEffect(() => {
+    handleAlertClose();
+  });
 
   return (
     <div style={{ width: location.pathname === '/add-new-receipt' ? '100%' : '' }}>
+      <Stack direction="row" justifyContent="flex-end">
+        {showSuccessAlert && (
+          <Alert
+            message="Success Text"
+            style={{ color: 'red' }}
+            type="success"
+            showIcon
+            closable
+            onClose={handleAlertClose}
+          />
+        )}
+      </Stack>
       {location.pathname === '/incomes' ? (
         <Button onClick={(e) => navigation('/add-new-receipt')} icon={<PlusOutlined />}>
           Add New Receipt
@@ -172,7 +206,7 @@ const AddNewReceipt: FC = () => {
           <Grid container spacing={3}>
             <Grid item lg={3} md={3} sm={6} xs={12}>
               <Select
-                style={{ width: '100%', textTransform: 'capitalize', color: '#fff' }}
+                style={{ width: '100%', textTransform: 'capitalize' }}
                 showSearch
                 placeholder="номер производителя"
                 optionFilterProp="children"
@@ -189,7 +223,7 @@ const AddNewReceipt: FC = () => {
             </Grid>
             <Grid item lg={3} md={3} sm={6} xs={12}>
               <Select
-                style={{ width: '100%', textTransform: 'capitalize', color: '#fff' }}
+                style={{ width: '100%', textTransform: 'capitalize' }}
                 showSearch
                 placeholder="производитель"
                 optionFilterProp="children"
@@ -209,6 +243,13 @@ const AddNewReceipt: FC = () => {
                 placeholder="Cross Number"
                 value={crossNumber !== null ? crossNumber.toString() : ''}
                 onChange={(e) => setCrossNumber(Number(e.target.value))}
+              />
+            </Grid>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
+              <Input
+                placeholder="Generation ID"
+                value={generationId !== null ? generationId.toString() : ''}
+                onChange={(e) => setGenerationId(Number(e.target.value))}
               />
             </Grid>
           </Grid>
@@ -244,9 +285,9 @@ const AddNewReceipt: FC = () => {
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
               <Input
-                placeholder="Model"
-                value={modelId !== null ? modelId.toString() : ''}
-                onChange={(e) => setModelId(Number(e.target.value))}
+                placeholder="Year"
+                value={year !== null ? year.toString() : ''}
+                onChange={(e) => setYear(Number(e.target.value))}
               />
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
@@ -258,8 +299,74 @@ const AddNewReceipt: FC = () => {
             <Grid item lg={4} md={4} sm={6} xs={12}>
               <Input placeholder="Note" value={note} onChange={(e) => setNote(e.target.value)} />
             </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input
+                placeholder="Marking"
+                value={marking !== null ? marking.toString() : ''}
+                onChange={(e) => setMarking(Number(e.target.value))}
+              />
+            </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Checkbox
+                checked={isArchive}
+                onChange={(e) => handleCheckboxChange(e, setIsArchive)}
+                color="primary"
+                inputProps={{ 'aria-label': 'Is Archive' }}
+              />
+              Is Archive
+            </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Checkbox
+                checked={notForExport}
+                onChange={(e) => handleCheckboxChange(e, setNotForExport)}
+                color="primary"
+                inputProps={{ 'aria-label': 'Not For Export' }}
+              />
+              Not For Export
+            </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input
+                placeholder="Site Link"
+                value={siteLink !== null ? siteLink.toString() : ''}
+                onChange={(e) => setSiteLink(e.target.value)}
+              />
+            </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input
+                placeholder="Old Data"
+                value={oldData !== null ? oldData.toString() : ''}
+                onChange={(e) => setOldData(e.target.value)}
+              />
+            </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input placeholder="Is Used" value={isUsed} onChange={(e) => setIsUsed(e.target.value)} />
+            </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input placeholder="Status" value={status} onChange={(e) => setStatus(e.target.value)} />
+            </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+            </Grid>
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input
+                placeholder="Price ID"
+                value={priceId !== null ? priceId.toString() : ''}
+                onChange={(e) => setPriceId(Number(e.target.value))}
+              />
+            </Grid>
+            {/* <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input placeholder="Sale Price" value={} onChange={(e) => setStatus(e.target.value)} />
+            </Grid> */}
+            <Grid item lg={4} md={4} sm={6} xs={12}>
+              <Input
+                placeholder="Manufactured ID"
+                value={manufacturerId !== null ? manufacturerId.toString() : ''}
+                onChange={(e) => setManufacturerId(Number(e.target.value))}
+              />
+            </Grid>
           </Grid>
-          <Stack direction="row" justifyContent="flex-end" mt={4}>
+          <Stack direction="row" justifyContent="flex-end" spacing={3} mt={4}>
+            <Button onClick={clearInput}>Cancel</Button>
             <Button icon={<SaveOutlined />} onClick={addAutopart}>
               Add Spare Part
             </Button>

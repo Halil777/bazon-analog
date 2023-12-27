@@ -55,12 +55,12 @@ export interface CarModel {
 }
 
 export const columns: ColumnsType<Autopart> = [
-  {
-    title: 'Autopart ID',
-    dataIndex: 'autopart_id',
-    key: 'autopart_id',
-    width: 100,
-  },
+  // {
+  //   title: 'Autopart ID',
+  //   dataIndex: 'autopart_id',
+  //   key: 'autopart_id',
+  //   width: 100,
+  // },
   {
     title: 'Name',
     dataIndex: 'name',
