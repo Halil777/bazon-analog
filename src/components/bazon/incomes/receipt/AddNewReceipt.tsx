@@ -256,20 +256,20 @@ const AddNewReceipt: FC = () => {
           <Box sx={{ background: 'gray', width: '100%', height: 2 }} mt={1} />
           <Stack direction="row" spacing={3} mt={3} alignItems="center">
             <Radio.Group value={frontBack} onChange={(e) => setFrontBack(e.target.value)}>
-              <Radio.Button value="Front" style={{ width: 100 }}>
-                Front
+              <Radio.Button value="front" style={{ width: 100 }}>
+                front
               </Radio.Button>
-              <Radio.Button value="Back" style={{ width: 100 }}>
-                Back
+              <Radio.Button value="back" style={{ width: 100 }}>
+                back
               </Radio.Button>
             </Radio.Group>
 
             <Radio.Group value={leftRight} onChange={(e) => setLeftRight(e.target.value)}>
-              <Radio.Button style={{ width: 100 }} value="Left">
-                Left
+              <Radio.Button style={{ width: 100 }} value="left">
+                left
               </Radio.Button>
-              <Radio.Button style={{ width: 100 }} value="Right">
-                Right
+              <Radio.Button style={{ width: 100 }} value="right">
+                right
               </Radio.Button>
             </Radio.Group>
             {/* Place for upload image button */}
