@@ -3,6 +3,7 @@ import { AxiosInstance } from '@app/api/axios/AxiosInstance';
 import { CarModel, GetBrands } from '@app/components/types/catalog/catalogTypes';
 import { Box, Checkbox, Grid, Stack, Tooltip } from '@mui/material';
 import { Alert, Button, Input, Radio, Select, Typography } from 'antd';
+import axios from 'axios';
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -19,7 +20,7 @@ const AddNewReceipt: FC = () => {
   const [year, setYear] = useState<number | null>(null);
   const [color, setColor] = useState<string>('');
   const [comment, setComment] = useState<string>('');
-  const [crossNumber, setCrossNumber] = useState<number | null>(null);
+  const [crossNumber, setCrossNumber] = useState<string>('');
   const [note, setNote] = useState<string>('');
   const [marking, setMarking] = useState<number | null>(null);
   const [isArchive, setIsArchive] = useState<boolean>(false);
@@ -114,11 +115,13 @@ const AddNewReceipt: FC = () => {
       category_id: categoryId,
     };
 
-    AxiosInstance.post('/autoparts/', autopartData)
+    axios
+      .post('http://95.85.121.153:3030/autoparts/', autopartData)
       .then((response) => {
         if (!response.data.error) {
           alert('Successfully added new autopart!');
           clearInput();
+          console.log('Auto Part data' + autopartData);
         } else {
           //   showError('Something went wrong!');
           alert('');
@@ -141,7 +144,7 @@ const AddNewReceipt: FC = () => {
     setYear(null);
     setColor('');
     setComment('');
-    setCrossNumber(null);
+    setCrossNumber('');
     setNote('');
     setMarking(null);
     setIsArchive(false);
@@ -239,11 +242,7 @@ const AddNewReceipt: FC = () => {
               />
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
-              <Input
-                placeholder="Cross Number"
-                value={crossNumber !== null ? crossNumber.toString() : ''}
-                onChange={(e) => setCrossNumber(Number(e.target.value))}
-              />
+              <Input placeholder="Cross Number" value={crossNumber} onChange={(e) => setCrossNumber(e.target.value)} />
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
               <Input
