@@ -32,8 +32,6 @@ const AddNewReceipt: FC = () => {
   const [status, setStatus] = useState<string>('');
   const [manufacturerId, setManufacturerId] = useState<number | null>(null);
   const [autopartId, setAutopartId] = useState<number | null>(null);
-  const [createdAt, setCreatedAt] = useState<string>('');
-  const [updatedAt, setUpdatedAt] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [brandData, setBrandData] = useState<GetBrands[]>([]);
   const [modelData, setModelData] = useState<CarModel[]>([]);
@@ -121,8 +119,6 @@ const AddNewReceipt: FC = () => {
       status: status,
       manufacturer_id: manufacturerId,
       autopart_id: autopartId,
-      created_at: createdAt,
-      updated_at: updatedAt,
       price_id: priceId,
       manufactured_no: manufacturedNo,
       category_id: categoryId,
@@ -169,8 +165,6 @@ const AddNewReceipt: FC = () => {
     setStatus('');
     setManufacturerId(null);
     setAutopartId(null);
-    setCreatedAt('');
-    setUpdatedAt('');
     setShowSuccessAlert(true);
     setPriceId(null);
     setManufacteredNo('');
@@ -350,7 +344,7 @@ const AddNewReceipt: FC = () => {
               />
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Select style={{ width: '100%' }} defaultValue="new" onChange={(value) => setIsUsed(value)}>
+              <Select style={{ width: '100%' }} value={isUsed} onChange={(value) => setIsUsed(value)}>
                 <Select.Option value="new">New</Select.Option>
                 <Select.Option value="used">Used</Select.Option>
                 <Select.Option value="contract">Contract</Select.Option>

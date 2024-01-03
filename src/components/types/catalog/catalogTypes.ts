@@ -1,8 +1,5 @@
 import { convertToDate } from '@app/utils/utils';
 import type { ColumnsType } from 'antd/es/table';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Space } from 'antd';
-
 export interface Autopart {
   autopart_id: number;
   brand_id: number | null;
