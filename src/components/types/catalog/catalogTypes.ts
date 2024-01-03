@@ -1,5 +1,7 @@
 import { convertToDate } from '@app/utils/utils';
 import type { ColumnsType } from 'antd/es/table';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Space } from 'antd';
 
 export interface Autopart {
   autopart_id: number;
@@ -208,6 +210,12 @@ export const columns: ColumnsType<Autopart> = [
     key: 'generation_name',
     width: 150,
     fixed: 'right',
+  },
+  {
+    title: 'Actions',
+    key: 'actions',
+    fixed: 'right',
+    width: 120,
   },
 ];
 

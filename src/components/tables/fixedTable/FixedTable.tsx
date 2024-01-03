@@ -1,7 +1,16 @@
 import { Table } from 'antd';
-import { FixedTableProps, columns } from '@app/components/types/catalog/catalogTypes';
+import { Autopart, FixedTableProps, columns } from '@app/components/types/catalog/catalogTypes';
 
 const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef }) => {
+  const handleEdit = (record: Autopart) => {
+    // Add your logic for editing here
+    console.log('Editing record:', record);
+  };
+
+  const handleDelete = (record: Autopart) => {
+    // Add your logic for deleting here
+    console.log('Deleting record:', record);
+  };
   return (
     <Table
       ref={tableRef}

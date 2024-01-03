@@ -14,7 +14,6 @@ const Catalog: FC = () => {
   const tableRef = useRef(null);
   const [brandData, setBrandData] = useState<GetBrands[]>([]);
   const [modelData, setModelData] = useState<CarModel[]>([]);
-  const [query, setQuery] = useState('');
 
   const fetchData = async () => {
     try {
@@ -28,27 +27,6 @@ const Catalog: FC = () => {
       setLoading(false);
     }
   };
-
-  //  useEffect(() => {
-  //    const fetchData = async () => {
-  //      const res = await AxiosInstance.get(`autoparts/q=${query}`);
-  //      setData(res.data);
-  //    };
-  //    if (query.length === 0 || query.length > 2) fetchData();
-  //  }, [query]);
-
-  //  const fetchData = async () => {
-  //    try {
-  //      setLoading(true);
-  //      const response = await AxiosInstance.get<Autopart[]>(`autoparts/?q=${query}`);
-  //      setData(response.data);
-  //      console.log(response.data);
-  //    } catch (error) {
-  //      console.error('Error fetching data:', error);
-  //    } finally {
-  //      setLoading(false);
-  //    }
-  //  };
 
   const getBrands = async () => {
     try {

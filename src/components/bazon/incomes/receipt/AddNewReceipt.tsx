@@ -3,7 +3,6 @@ import { AxiosInstance } from '@app/api/axios/AxiosInstance';
 import { CarModel, GetBrands } from '@app/components/types/catalog/catalogTypes';
 import { Box, Checkbox, Grid, Stack, Tooltip } from '@mui/material';
 import { Alert, Button, Input, Radio, Select, Typography } from 'antd';
-import axios from 'axios';
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -42,6 +41,20 @@ const AddNewReceipt: FC = () => {
   const [priceId, setPriceId] = useState<number | null>(null);
   const [manufacturedNo, setManufacteredNo] = useState<string>('');
   const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [selectedBrandModels, setSelectedBrandModels] = useState<CarModel[]>([]);
+
+  const handleBrandChange = (value: number | null) => {
+    const selectedBrand = brandData.find((brand) => brand.id === value);
+
+    if (selectedBrand) {
+      const modelsForSelectedBrand = modelData.filter((model) => model.brand_id === selectedBrand.id);
+      setSelectedBrandModels(modelsForSelectedBrand);
+    } else {
+      setSelectedBrandModels([]);
+    }
+
+    setBrandId(value);
+  };
 
   const getBrands = async () => {
     try {
@@ -115,8 +128,7 @@ const AddNewReceipt: FC = () => {
       category_id: categoryId,
     };
 
-    axios
-      .post('http://95.85.121.153:3030/autoparts/', autopartData)
+    AxiosInstance.post('/autoparts/', autopartData)
       .then((response) => {
         if (!response.data.error) {
           alert('Successfully added new autopart!');
@@ -194,7 +206,7 @@ const AddNewReceipt: FC = () => {
         )}
       </Stack>
       {location.pathname === '/incomes' ? (
-        <Button onClick={(e) => navigation('/add-new-receipt')} icon={<PlusOutlined />}>
+        <Button onClick={() => navigation('/add-new-receipt')} icon={<PlusOutlined />}>
           Add New Receipt
         </Button>
       ) : null}
@@ -222,6 +234,7 @@ const AddNewReceipt: FC = () => {
                   label: brand.name,
                   number_of_part: brand.number_of_part,
                 }))}
+                onChange={handleBrandChange}
               />
             </Grid>
             <Grid item lg={3} md={3} sm={6} xs={12}>
@@ -234,7 +247,7 @@ const AddNewReceipt: FC = () => {
                 filterSort={(optionA, optionB) =>
                   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                 }
-                options={modelData.map((model) => ({
+                options={selectedBrandModels.map((model) => ({
                   value: model.id,
                   label: model.name,
                   brandId: model.brand_id,
@@ -272,7 +285,6 @@ const AddNewReceipt: FC = () => {
                 right
               </Radio.Button>
             </Radio.Group>
-            {/* Place for upload image button */}
           </Stack>
           <Grid container spacing={3} mt={4}>
             <Grid item lg={4} md={4} sm={6} xs={12}>
@@ -338,24 +350,24 @@ const AddNewReceipt: FC = () => {
               />
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Is Used" value={isUsed} onChange={(e) => setIsUsed(e.target.value)} />
+              <Select style={{ width: '100%' }} defaultValue="new" onChange={(value) => setIsUsed(value)}>
+                <Select.Option value="new">New</Select.Option>
+                <Select.Option value="used">Used</Select.Option>
+                <Select.Option value="contract">Contract</Select.Option>
+              </Select>
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Status" value={status} onChange={(e) => setStatus(e.target.value)} />
+              <Select style={{ width: '100%' }} defaultValue="active" onChange={(value) => setStatus(value)}>
+                <Select.Option value="active">Active</Select.Option>
+                <Select.Option value="passive">Passive</Select.Option>
+                <Select.Option value="pending">Pending</Select.Option>
+                <Select.Option value="canceled">Canceled</Select.Option>
+                <Select.Option value="rejected">Rejected</Select.Option>
+              </Select>
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
               <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
             </Grid>
-            <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input
-                placeholder="Price ID"
-                value={priceId !== null ? priceId.toString() : ''}
-                onChange={(e) => setPriceId(Number(e.target.value))}
-              />
-            </Grid>
-            {/* <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Input placeholder="Sale Price" value={} onChange={(e) => setStatus(e.target.value)} />
-            </Grid> */}
             <Grid item lg={4} md={4} sm={6} xs={12}>
               <Input
                 placeholder="Manufactured ID"
