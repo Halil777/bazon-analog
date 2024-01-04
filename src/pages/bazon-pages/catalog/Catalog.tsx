@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Button } from 'antd';
 import { ExportOutlined, SettingOutlined } from '@ant-design/icons';
 import SearchComponent from '@app/components/bazon/catalog-components/SearchComponent';
@@ -15,12 +15,41 @@ const Catalog: FC = () => {
   const [brandData, setBrandData] = useState<GetBrands[]>([]);
   const [modelData, setModelData] = useState<CarModel[]>([]);
 
+  // const fetchData = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await AxiosInstance.get<Autopart[]>('autoparts/');
+  //     setData(response.data);
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await AxiosInstance.get<Autopart[]>('autoparts/');
-      setData(response.data);
-      console.log(response.data);
+
+      // Fetch autopart data
+      const autopartResponse = await AxiosInstance.get<Autopart[]>('autoparts/');
+      const autopartData = autopartResponse.data;
+
+      // Fetch storage data
+      const storageResponse = await AxiosInstance.get<Storage[]>('/storages');
+      const storageData = storageResponse.data;
+
+      // Merge autopart and storage data based on storage_id
+      const mergedData = autopartData.map((autopart) => {
+        const storageInfo = storageData.find((storage) => storage.id === autopart.storage_id);
+        return { ...autopart, storage: storageInfo };
+      });
+
+      // Update setData line to explicitly specify the type
+      setData(mergedData as unknown as SetStateAction<Autopart[]>);
+
+      console.log(mergedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {

@@ -1,7 +1,8 @@
 import { convertToDate } from '@app/utils/utils';
 import type { ColumnsType } from 'antd/es/table';
+
 export interface Autopart {
-  id: number; // Replace 'uniqueIdentifier' with the actual property name
+  id: number;
   autopart_id: number;
   brand_id: number | null;
   model_id: number | null;
@@ -38,6 +39,43 @@ export interface Autopart {
     name: string;
     model_id: number;
   };
+  storage_id: number | null;
+  storage?: {
+    id: number;
+    name_tm: string;
+    name_en: string;
+    name_ru: string;
+    website: string | null;
+    phone: string | null;
+    abbr: string | null;
+    description_tm: string | null;
+    description_en: string | null;
+    description_ru: string | null;
+    bar_code_prefix: string | null;
+    is_hidden: boolean;
+    is_issue_point: boolean;
+    is_income_point: boolean;
+    created_by: number;
+    updated_by: number | null;
+    created_at: string;
+    updated_at: string;
+    creator: {
+      id: number;
+      name: string;
+      username: string;
+      email: string;
+      age: number;
+      password: string;
+      gender: string;
+      roleId: number;
+      updated_at: string;
+      created_at: string;
+      deleted: boolean;
+    };
+    updater: {
+      // properties of updater
+    } | null;
+  } | null;
 }
 
 export interface GetBrands {
@@ -207,13 +245,13 @@ export const columns: ColumnsType<Autopart> = [
     dataIndex: ['generation', 'name'],
     key: 'generation_name',
     width: 150,
-    fixed: 'right',
   },
   {
-    title: 'Actions',
-    key: 'actions',
+    title: 'Storage Name',
+    dataIndex: ['storage', 'name_tm'], // Use the correct property based on your storage structure
+    key: 'storage_name',
+    width: 150,
     fixed: 'right',
-    width: 120,
   },
 ];
 
