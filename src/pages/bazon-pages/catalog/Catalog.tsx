@@ -76,7 +76,7 @@ const Catalog: FC = () => {
         </div>
       </div>
 
-      <FixedTable data={data} tableRef={tableRef} loading={loading} />
+      <FixedTable data={data} fetchData={fetchData} tableRef={tableRef} loading={loading} />
     </>
   );
 };

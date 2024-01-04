@@ -1,24 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal } from 'antd';
 import { Autopart, FixedTableProps, columns } from '@app/components/types/catalog/catalogTypes';
 import { AxiosInstance } from '@app/api/axios/AxiosInstance';
+import { notificationController } from '@app/controllers/notificationController';
+import { Drawer, Stack, Typography } from '@mui/material';
+import UpdateTable from './UpdateTable';
 
-const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef }) => {
+const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef, fetchData }) => {
   const [selectedRecord, setSelectedRecord] = useState<Autopart | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
   const handleEdit = (record: Autopart) => {
     setSelectedRecord(record);
-    // Additional logic for editing can be added here if needed
+  };
+
+  const openDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
   };
 
   const rowSelection = {
     onSelect: (record: Autopart, selected: boolean) => {
       if (selected) {
         setSelectedRecord(record);
-        // Additional logic when a row is selected can be added here
       } else {
         setSelectedRecord(null);
-        // Additional logic when a row is deselected can be added here
       }
     },
   };
@@ -36,30 +45,22 @@ const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef }) => {
   const handleUpdate = () => {
     console.log('Updating record:', selectedRecord);
     handleModalCancel();
-    // Handle the update logic, e.g., navigate to the update page
+    openDrawer();
   };
 
-  const hasIdProperty = (record: Autopart | null): record is Autopart => {
-    return record !== null && typeof record === 'object' && 'id' in record;
-  };
-
-  const handleDeleteConfirm = () => {
-    console.log('Deleting record:', selectedRecord);
-
-    if (hasIdProperty(selectedRecord)) {
-      const autopartId = selectedRecord.autopart_id;
-      AxiosInstance.delete(`/autoparts/${autopartId}`)
-        .then((response) => {
-          console.log('Delete successful', response);
-          // Add any additional logic here if needed
-          handleModalCancel();
-        })
-        .catch((error) => {
-          console.error('Error deleting record', error.response); // Log the detailed error response
+  const deleteAutoPart = (autopart_id: number) => {
+    AxiosInstance.delete('autoparts/' + autopart_id)
+      .then((response) => {
+        console.log('Delete successful', response);
+        handleModalCancel();
+        fetchData();
+        notificationController.success({
+          message: 'Successfully Deleted auto part',
         });
-    } else {
-      console.error('Selected record does not have an id property', selectedRecord);
-    }
+      })
+      .catch((error) => {
+        console.error('Error deleting record', error.response);
+      });
   };
 
   return (
@@ -79,15 +80,15 @@ const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef }) => {
         visible={!!selectedRecord}
         onCancel={handleModalCancel}
         footer={[
-          <Button key="cancel" onClick={handleModalCancel}>
-            Cancel
-          </Button>,
-          <Button key="delete" danger onClick={handleDeleteConfirm}>
-            Delete
-          </Button>,
-          <Button key="update" type="primary" onClick={handleUpdate}>
-            Update
-          </Button>,
+          <Stack direction="row" spacing={3} justifyContent={'flex-end'} key="footer-buttons">
+            <Button key="cancel" style={{ marginRight: 20 }} onClick={handleModalCancel}>
+              Cancel
+            </Button>
+            <Button key="delete" danger onClick={() => deleteAutoPart(selectedRecord ? selectedRecord.autopart_id : 0)}>
+              Delete
+            </Button>
+            <UpdateTable key={'update'} />
+          </Stack>,
         ]}
       >
         {/* Display additional information or confirmation message */}

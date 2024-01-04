@@ -1,6 +1,7 @@
 import { convertToDate } from '@app/utils/utils';
 import type { ColumnsType } from 'antd/es/table';
 export interface Autopart {
+  id: number; // Replace 'uniqueIdentifier' with the actual property name
   autopart_id: number;
   brand_id: number | null;
   model_id: number | null;
@@ -220,4 +221,5 @@ export interface FixedTableProps {
   data: Autopart[];
   loading: boolean;
   tableRef: any;
+  fetchData: () => Promise<void>;
 }

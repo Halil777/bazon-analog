@@ -28,8 +28,8 @@ const AddNewReceipt: FC = () => {
   const [video, setVideo] = useState<string>('');
   const [oldBarCode, setOldBarCode] = useState<string>('');
   const [oldData, setOldData] = useState<string>('');
-  const [isUsed, setIsUsed] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
+  const [isUsed, setIsUsed] = useState<string>('is Used ?');
+  const [status, setStatus] = useState<string>('Choose Spare Part Status');
   const [manufacturerId, setManufacturerId] = useState<number | null>(null);
   const [autopartId, setAutopartId] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -351,7 +351,7 @@ const AddNewReceipt: FC = () => {
               </Select>
             </Grid>
             <Grid item lg={4} md={4} sm={6} xs={12}>
-              <Select style={{ width: '100%' }} defaultValue="active" onChange={(value) => setStatus(value)}>
+              <Select style={{ width: '100%' }} value={status} onChange={(value) => setStatus(value)}>
                 <Select.Option value="active">Active</Select.Option>
                 <Select.Option value="passive">Passive</Select.Option>
                 <Select.Option value="pending">Pending</Select.Option>
