@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 const ColumnManager: FC = () => {
-  return <div>ColumnManager</div>;
+  return <div></div>;
 };
 
 export default ColumnManager;

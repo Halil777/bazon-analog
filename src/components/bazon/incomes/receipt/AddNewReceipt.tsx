@@ -1,10 +1,60 @@
 import { ArrowLeftOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons';
-import { AxiosInstance } from '@app/api/axios/AxiosInstance';
+import { AxiosInstance, AxiosInstanceFormData } from '@app/api/axios/AxiosInstance';
 import { CarModel, GetBrands } from '@app/components/types/catalog/catalogTypes';
 import { Box, Checkbox, Grid, Stack, Tooltip } from '@mui/material';
-import { Alert, Button, Input, Radio, Select, Typography } from 'antd';
+import { Alert, Button, Input, Modal, Radio, Select, Typography, Upload } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
+interface ImageUploadFormProps {
+  autopartId: number | null;
+  onClose: () => void;
+}
+
+const ImageUploadForm: React.FC<ImageUploadFormProps> = ({ autopartId, onClose }) => {
+  const [fileList, setFileList] = useState<any[]>([]);
+
+  const handleUpload = async () => {
+    const formData = new FormData();
+    fileList.forEach((file) => {
+      formData.append('images', file);
+    });
+
+    try {
+      await AxiosInstanceFormData.post(`/autoparts/${autopartId}/images`, formData);
+
+      alert('Images uploaded successfully');
+      onClose(); // Close the modal after uploading
+    } catch (error) {
+      // Handle error
+      console.log('Error uploading images');
+    }
+  };
+
+  const handleRemove = (file: any) => {
+    setFileList((prevList) => prevList.filter((item) => item.uid !== file.uid));
+  };
+
+  const handleChange = ({ fileList }: { fileList: any[] }) => {
+    setFileList(fileList);
+  };
+
+  return (
+    <div>
+      <Upload
+        fileList={fileList}
+        beforeUpload={() => false} // Prevent auto-upload, let the user trigger the upload
+        onRemove={handleRemove}
+        onChange={handleChange}
+      >
+        <Button icon={<PlusOutlined />}>Upload Images</Button>
+      </Upload>
+      <Button type="primary" onClick={handleUpload}>
+        Confirm Upload
+      </Button>
+    </div>
+  );
+};
 
 const AddNewReceipt: FC = () => {
   const navigation = useNavigate();
@@ -40,6 +90,17 @@ const AddNewReceipt: FC = () => {
   const [manufacturedNo, setManufacteredNo] = useState<string>('');
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [selectedBrandModels, setSelectedBrandModels] = useState<CarModel[]>([]);
+  const [showImageModal, setShowImageModal] = useState(false);
+
+  const handleImageModalOpen = (autopartId: number) => {
+    setShowImageModal(true);
+    setAutopartId(autopartId);
+  };
+
+  const handleImageModalClose = () => {
+    setShowImageModal(false);
+    setAutopartId(null);
+  };
 
   const handleBrandChange = (value: number | null) => {
     const selectedBrand = brandData.find((brand) => brand.id === value);
@@ -127,7 +188,8 @@ const AddNewReceipt: FC = () => {
     AxiosInstance.post('/autoparts/', autopartData)
       .then((response) => {
         if (!response.data.error) {
-          alert('Successfully added new autopart!');
+          // alert('Successfully added new autopart!');
+          setShowImageModal(true);
           clearInput();
           console.log('Auto Part data' + autopartData);
         } else {
@@ -209,7 +271,7 @@ const AddNewReceipt: FC = () => {
           <Stack direction="row" mb={3} justifyContent="space-between" alignItems="center">
             <Typography style={{ fontSize: 28 }}>Adding a new product</Typography>
             <Tooltip title="Back to Incomes">
-              <ArrowLeftOutlined style={{ cursor: 'pointer' }} onClick={(e) => navigation('/incomes')} />
+              <ArrowLeftOutlined style={{ cursor: 'pointer' }} onClick={() => navigation('/incomes')} />
             </Tooltip>
           </Stack>
           <Grid container spacing={3}>
@@ -378,6 +440,14 @@ const AddNewReceipt: FC = () => {
           </Stack>
         </>
       ) : null}
+      <Modal
+        title="Add Image"
+        visible={showImageModal}
+        onCancel={handleImageModalClose}
+        // Add necessary props for your image upload modal
+      >
+        <ImageUploadForm autopartId={autopartId} onClose={handleImageModalClose} />
+      </Modal>
     </div>
   );
 };

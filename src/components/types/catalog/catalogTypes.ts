@@ -1,4 +1,4 @@
-import { convertToDate } from '@app/utils/utils';
+// import { convertToDate } from '@app/utils/utils';
 import type { ColumnsType } from 'antd/es/table';
 
 export interface Autopart {
@@ -76,6 +76,32 @@ export interface Autopart {
       // properties of updater
     } | null;
   } | null;
+  section: {
+    id: number;
+    name_tm: string;
+    name_en: string;
+    name_ru: string;
+    section_number: number;
+    section_type: string;
+    space_count: number;
+    created_at: string;
+    updated_at: string;
+  } | null;
+}
+
+export interface Section {
+  id: number;
+  parent_id: number | null;
+  autoart_group_id: number | null;
+  storage_id: number;
+  name_tm: string;
+  name_en: string;
+  name_ru: string;
+  section_number: number;
+  section_type: string;
+  space_count: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface GetBrands {
@@ -93,140 +119,176 @@ export interface CarModel {
 }
 
 export const columns: ColumnsType<Autopart> = [
-  // {
-  //   title: 'Autopart ID',
-  //   dataIndex: 'autopart_id',
-  //   key: 'autopart_id',
-  //   width: 100,
-  // },
+  {
+    title: 'Autopart ID',
+    dataIndex: 'autopart_id',
+    key: 'autopart_id',
+    width: 100,
+  },
+
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
     width: 150,
   },
+
   {
     title: 'Front/Back',
     dataIndex: 'front_back',
     key: 'front_back',
     width: 100,
   },
+
+  {
+    title: 'Images',
+    dataIndex: 'front_back',
+    key: 'front_back',
+    width: 100,
+  },
+
   {
     title: 'Left/Right',
     dataIndex: 'left_right',
     key: 'left_right',
     width: 100,
   },
+
   {
     title: 'Number of Part',
     dataIndex: 'number_of_part',
     key: 'number_of_part',
     width: 100,
   },
+
   {
     title: 'Year',
     dataIndex: 'year',
     key: 'year',
     width: 100,
   },
+
   {
     title: 'Color',
     dataIndex: 'color',
     key: 'color',
     width: 100,
   },
+
   {
     title: 'Comment',
     dataIndex: 'comment',
     key: 'comment',
     width: 150,
   },
+
   {
     title: 'Cross Number',
     dataIndex: 'cross_number',
     key: 'cross_number',
     width: 150,
   },
+
   {
     title: 'Note',
     dataIndex: 'note',
     key: 'note',
     width: 150,
   },
+
+  {
+    title: 'Section',
+    dataIndex: 'section_number',
+    key: 'section_number',
+    width: 150,
+  },
+
   {
     title: 'Marking',
     dataIndex: 'marking',
     key: 'marking',
     width: 150,
   },
+
   {
     title: 'Is Archive',
     dataIndex: 'is_archive',
     key: 'is_archive',
     width: 100,
   },
+
   {
     title: 'Not for Export',
     dataIndex: 'not_for_export',
     key: 'not_for_export',
     width: 120,
   },
+
   {
     title: 'Site Link',
     dataIndex: 'site_link',
     key: 'site_link',
     width: 150,
   },
+
   {
     title: 'Video',
     dataIndex: 'video',
     key: 'video',
     width: 150,
   },
+
   {
     title: 'Old Bar Code',
     dataIndex: 'old_bar_code',
     key: 'old_bar_code',
     width: 150,
   },
+
   {
     title: 'Old Data',
     dataIndex: 'old_data',
     key: 'old_data',
     width: 150,
   },
+
   {
     title: 'Is Used',
     dataIndex: 'is_used',
     key: 'is_used',
     width: 100,
   },
+
   {
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
     width: 100,
   },
-  {
-    title: 'Created At',
-    dataIndex: 'created_at',
-    key: 'created_at',
-    width: 150,
-    render: (text: string) => convertToDate(text),
-  },
-  {
-    title: 'Updated At',
-    dataIndex: 'updated_at',
-    key: 'updated_at',
-    width: 150,
-    render: (text: string) => convertToDate(text),
-  },
+
+  // {
+  //   title: 'Created At',
+  //   dataIndex: 'created_at',
+  //   key: 'created_at',
+  //   width: 150,
+  //   render: (text: string) => convertToDate(text),
+  // },
+
+  // {
+  //   title: 'Updated At',
+  //   dataIndex: 'updated_at',
+  //   key: 'updated_at',
+  //   width: 150,
+  //   render: (text: string) => convertToDate(text),
+  // },
+
   {
     title: 'Model ID',
     dataIndex: ['model', 'id'],
     key: 'model_id',
     width: 100,
   },
+
   {
     title: 'Model Name',
     dataIndex: ['model', 'name'],
@@ -240,12 +302,14 @@ export const columns: ColumnsType<Autopart> = [
     key: 'generation_id',
     width: 100,
   },
+
   {
     title: 'Generation Name',
     dataIndex: ['generation', 'name'],
     key: 'generation_name',
     width: 150,
   },
+
   {
     title: 'Storage Name',
     dataIndex: ['storage', 'name_tm'], // Use the correct property based on your storage structure
@@ -258,6 +322,5 @@ export const columns: ColumnsType<Autopart> = [
 export interface FixedTableProps {
   data: Autopart[];
   loading: boolean;
-  tableRef: any;
   fetchData: () => Promise<void>;
 }

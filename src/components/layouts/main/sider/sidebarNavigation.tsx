@@ -2,16 +2,12 @@ import React from 'react';
 import {
   CompassOutlined,
   DashboardOutlined,
-  FormOutlined,
-  HomeOutlined,
   LayoutOutlined,
   LineChartOutlined,
   MoneyCollectOutlined,
   PlusCircleOutlined,
-  TableOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { ReactComponent as NftIcon } from '@app/assets/icons/nft-icon.svg';
 
 export interface SidebarNavigationItem {
   title: string;
@@ -22,19 +18,6 @@ export interface SidebarNavigationItem {
 }
 
 export const sidebarNavigation: SidebarNavigationItem[] = [
-  // {
-  //   title: 'common.nft-dashboard',
-  //   key: 'nft-dashboard',
-  //   // TODO use path variable
-  //   url: '/',
-  //   icon: <NftIcon />,
-  // },
-  // {
-  //   title: 'common.medical-dashboard',
-  //   key: 'catalog',
-  //   url: '/medical-dashboard',
-  //   icon: <DashboardOutlined />,
-  // },
   {
     title: 'Catalg',
     key: 'medical-dashboard',
@@ -63,18 +46,6 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     icon: <MoneyCollectOutlined />,
   },
 
-  // {
-  //   title: 'common.apps',
-  //   key: 'apps',
-  //   icon: <HomeOutlined />,
-  //   children: [
-  //     {
-  //       title: 'common.feed',
-  //       key: 'feed',
-  //       url: '/apps/feed',
-  //     },
-  //   ],
-  // },
   {
     title: 'common.authPages',
     key: 'auth',
@@ -112,24 +83,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
       },
     ],
   },
-  // {
-  //   title: 'common.forms',
-  //   key: 'forms',
-  //   icon: <FormOutlined />,
-  //   children: [
-  //     {
-  //       title: 'common.advancedForms',
-  //       key: 'advanced-forms',
-  //       url: '/forms/advanced-forms',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'common.dataTables',
-  //   key: 'dataTables',
-  //   url: '/data-tables',
-  //   icon: <TableOutlined />,
-  // },
+
   {
     title: 'common.charts',
     key: 'charts',

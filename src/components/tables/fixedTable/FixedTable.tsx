@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Table, Button, Modal } from 'antd';
 import { Autopart, FixedTableProps, columns } from '@app/components/types/catalog/catalogTypes';
 import { AxiosInstance } from '@app/api/axios/AxiosInstance';
 import { notificationController } from '@app/controllers/notificationController';
-import { Drawer, Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import UpdateTable from './UpdateTable';
+import { ExportOutlined } from '@ant-design/icons';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
-const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef, fetchData }) => {
+const FixedTable: React.FC<FixedTableProps> = ({ data, loading, fetchData }) => {
   const [selectedRecord, setSelectedRecord] = useState<Autopart | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const tableRef = useRef(null);
 
   const handleEdit = (record: Autopart) => {
     setSelectedRecord(record);
-  };
-
-  const openDrawer = () => {
-    setIsDrawerOpen(true);
-  };
-
-  const closeDrawer = () => {
-    setIsDrawerOpen(false);
   };
 
   const rowSelection = {
@@ -42,12 +37,6 @@ const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef, fetchD
     setSelectedRecord(null);
   };
 
-  const handleUpdate = () => {
-    console.log('Updating record:', selectedRecord);
-    handleModalCancel();
-    openDrawer();
-  };
-
   const deleteAutoPart = (autopart_id: number) => {
     AxiosInstance.delete('autoparts/' + autopart_id)
       .then((response) => {
@@ -63,13 +52,33 @@ const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef, fetchD
       });
   };
 
+  const handleExportTable = () => {
+    const tableData = data.map((record) =>
+      columns.map((column) => {
+        if ('dataIndex' in column) {
+          return record[column.dataIndex as keyof Autopart];
+        }
+        return null;
+      }),
+    );
+
+    const ws = XLSX.utils.aoa_to_sheet([columns.map((column) => column.title), ...tableData]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const dataBlob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    saveAs(dataBlob, 'bazon.xlsx');
+  };
+
   return (
     <>
       <Table
         ref={tableRef}
         columns={columns}
         dataSource={data}
-        scroll={{ x: 5500 }}
+        scroll={{ x: 6000 }}
         loading={loading}
         locale={{ emptyText: 'No data found' }}
         rowSelection={rowSelection}
@@ -91,14 +100,15 @@ const FixedTable: React.FC<FixedTableProps> = ({ data, loading, tableRef, fetchD
           </Stack>,
         ]}
       >
-        {/* Display additional information or confirmation message */}
         {selectedRecord && (
           <div>
             <p>{`Selected record: ${selectedRecord.name}`}</p>
-            {/* Add more details or confirmation messages as needed */}
           </div>
         )}
       </Modal>
+      <Button icon={<ExportOutlined />} onClick={handleExportTable}>
+        Export Table Data
+      </Button>
     </>
   );
 };
